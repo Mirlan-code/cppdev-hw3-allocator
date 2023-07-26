@@ -73,7 +73,7 @@ struct PoolAllocator {
         using other = PoolAllocator<U, kSize>;
     };
 
-    T* GetPool() {
+    T* GetPool() const {
         return Pool_;
     }
 
