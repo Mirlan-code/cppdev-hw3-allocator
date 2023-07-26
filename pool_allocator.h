@@ -73,6 +73,10 @@ struct PoolAllocator {
         using other = PoolAllocator<U, kSize>;
     };
 
+    T* GetPool() {
+        return Pool_;
+    }
+
 private:
     T* Pool_;
     int* Used_;
@@ -81,11 +85,11 @@ private:
 template <class T, size_t kSize>
 constexpr bool operator==(const PoolAllocator<T, kSize>& a1, const PoolAllocator<T, kSize>& a2) noexcept
 {
-    return a1.Pool_ == a2.Pool_;
+    return a1.GetPool() == a2.GetPool();
 }
 
 template <class T, size_t kSize>
 constexpr bool operator!=(const PoolAllocator<T, kSize>& a1, const PoolAllocator<T, kSize>& a2) noexcept
 {
-    return a1.Pool_ != a2.Pool_;
+    return a1.GetPool() != a2.GetPool();
 }
