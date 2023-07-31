@@ -7,11 +7,7 @@ struct PoolAllocator {
     typedef T value_type;
 
     PoolAllocator() {
-        Pool_ = static_cast<T*>(::operator new(kSize * sizeof(T)));
-        Used_ = new int[kSize];
-        for (size_t i = 0; i < kSize; i++) {
-            Used_[i] = 0;
-        }
+
     }
 
     ~PoolAllocator() {
@@ -19,6 +15,13 @@ struct PoolAllocator {
     }
 
     T* allocate(size_t n) {
+        if (Pool_ == nullptr) {
+            Pool_ = static_cast<T*>(::operator new(kSize * sizeof(T)));
+            Used_ = new int[kSize];
+            for (size_t i = 0; i < kSize; i++) {
+                Used_[i] = 0;
+            }
+        }
         if (n > kSize) {
             std::cout << "Can not allocate" << std::endl;
             return nullptr;
@@ -50,8 +53,6 @@ struct PoolAllocator {
             size_t idx = p - Pool_ + i;
             Used_[idx] = 0;
         }
-//        std::cout << "deallocate " << p << " " << n << std::endl;
-//        ::operator delete(p);
     }
 
     // Not needed because of allocator_traits
@@ -78,7 +79,7 @@ struct PoolAllocator {
     }
 
 private:
-    T* Pool_;
+    T* Pool_ = nullptr;
     int* Used_;
 };
 

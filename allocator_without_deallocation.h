@@ -6,13 +6,16 @@ struct AllocatorWithoutDeallocation {
     typedef T value_type;
 
     AllocatorWithoutDeallocation() {
-        Pool_ = static_cast<T*>(::operator new(kSize * sizeof(T)));
+
     }
     ~AllocatorWithoutDeallocation() {
         ::operator delete(Pool_);
     }
 
     T* allocate(size_t n) {
+        if (Pool_ == nullptr) {
+            Pool_ = static_cast<T*>(::operator new(kSize * sizeof(T)));
+        }
         auto res = &Pool_[Idx_];
         Idx_ += n;
         return res;
@@ -28,7 +31,7 @@ struct AllocatorWithoutDeallocation {
 
 private:
     size_t Idx_ = 0;
-    T* Pool_;
+    T* Pool_ = nullptr;
 };
 
 template <class T, size_t kSize>
